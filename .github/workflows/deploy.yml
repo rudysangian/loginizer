@@ -20,6 +20,15 @@ jobs:
       - name: Build Flutter Web
         run: flutter build web --release
 
+      - name: Remove old files in VPS
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            rm -rf /var/www/html/*
+
       - name: Deploy to VPS (/var/www/html)
         uses: appleboy/scp-action@v0.1.7
         with:
