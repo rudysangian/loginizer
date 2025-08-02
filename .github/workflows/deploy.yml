@@ -36,4 +36,16 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           source: "build/web/*"
-          target: ${{ secrets.VPS_PATH_HTML }}
+          target: "/var/www/html/"
+
+      - name: Move files to correct folder
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            if [ -d "/var/www/html/build" ]; then
+              mv /var/www/html/build/* /var/www/html/
+              rm -rf /var/www/html/build
+            fi
