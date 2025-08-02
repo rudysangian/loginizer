@@ -29,11 +29,12 @@ jobs:
           script: |
             rm -rf /var/www/html/*
 
-      - name: Deploy to VPS (/var/www/html)
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy using rsync (no extra build folder)
+        uses: burnett01/rsync-deployments@5.2
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          source: "./build/web/*"
-          target: "/var/www/html/"
+          switches: -avzr --delete
+          path: build/web/
+          remote_path: /var/www/html/
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_user: ${{ secrets.VPS_USER }}
+          remote_key: ${{ secrets.DEPLOY_KEY }}
