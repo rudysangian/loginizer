@@ -5,7 +5,6 @@ import 'package:ipm_web/widgets/chat_button.dart';
 import 'package:ipm_web/pages/about_page.dart';
 import 'package:ipm_web/pages/driver_location_page.dart';
 import 'driver_login_page.dart';
-import 'driver_register_page.dart';
 import 'forwarder_dashboard.dart';
 import 'forwarder_login_page.dart';
 import 'shipping_login_page.dart';
@@ -115,196 +114,199 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildHomeContent(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double maxWidth = screenWidth > 800 ? 600 : screenWidth * 0.95;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isWide = screenWidth > 800;
 
     return SafeArea(
-      child: Center(
-        child: Container(
-          width: maxWidth,
-          child: CustomScrollView(
-            slivers: [
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _TopMenuBar(
-                  onChatPressed: () => showChatForm(context),
-                  onForwarderTap: _handleForwarderClick,
-                  onDriverTap: _handleDriverClick,
-                  onShippingTap: _handleShippingClick,
-                ),
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate([
-                  const SizedBox(height: 16),
-                  Center(
-                    child: Image.asset(
-                      'assets/images/LogoProduct.png',
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.contain,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final maxWidth = isWide ? 700.0 : constraints.maxWidth * 0.95;
+
+          return Center(
+            child: Container(
+              width: maxWidth,
+              child: CustomScrollView(
+                slivers: [
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: _TopMenuBar(
+                      onChatPressed: () => showChatForm(context),
+                      onForwarderTap: _handleForwarderClick,
+                      onDriverTap: _handleDriverClick,
+                      onShippingTap: _handleShippingClick,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  const Center(
-                    child: Text(
-                      'Smart Logistics Coordination Tools',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black87,
-                        fontStyle: FontStyle.italic,
+                  SliverList(
+                    delegate: SliverChildListDelegate([
+                      const SizedBox(height: 16),
+                      Center(
+                        child: Image.asset(
+                          'assets/images/LogoProduct.png',
+                          width: isWide ? 120 : 90,
+                          height: isWide ? 120 : 90,
+                          fit: BoxFit.contain,
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  const Center(
-                    child: Text(
-                      'Logistics Performance Index',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'Select Port',
-                        border: OutlineInputBorder(),
-                      ),
-                      value: selectedPort,
-                      items: portLpiData.keys.map((port) {
-                        return DropdownMenuItem<String>(
-                          value: port,
-                          child: Text(port),
-                        );
-                      }).toList(),
-                      onChanged: (value) =>
-                          setState(() => selectedPort = value),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  if (selectedPort != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        portLpiData[selectedPort!] ?? '',
-                        style: const TextStyle(
-                          fontSize: 14,
+                      const SizedBox(height: 12),
+                      Text(
+                        'Smart Logistics Coordination Tools',
+                        style: TextStyle(
+                          fontSize: isWide ? 16 : 13,
+                          color: Colors.black87,
                           fontStyle: FontStyle.italic,
                         ),
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                  const SizedBox(height: 24),
-                  const Center(
-                    child: Text(
-                      'Current Logistics Metrics',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: const [
-                        _StatBox(
-                          title: 'ET:BT Ratio',
-                          value: '0.82',
-                          icon: LucideIcons.activity,
-                        ),
-                        _StatBox(
-                          title: 'YOR (%)',
-                          value: '67',
-                          icon: LucideIcons.package,
-                        ),
-                        _StatBox(
-                          title: 'BOR (%)',
-                          value: '74',
-                          icon: LucideIcons.alignVerticalSpaceAround,
-                        ),
-                        _StatBox(
-                          title: 'Productivity',
-                          value: '132',
-                          icon: LucideIcons.trendingUp,
-                        ),
-                        _StatBox(
-                          title: 'Delay Alerts',
-                          value: '3',
-                          icon: LucideIcons.alertTriangle,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  const Center(
-                    child: Text(
-                      'Featured Logistics Services',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Column(
-                      children: promoList.map((promo) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  color: Colors.indigo.shade50,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Icon(
-                                  promo.icon,
-                                  size: 28,
-                                  color: Colors.indigo,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      promo.title,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      promo.description,
-                                      style: const TextStyle(fontSize: 13),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                      const SizedBox(height: 24),
+
+                      // Dropdown Port
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: DropdownButtonFormField<String>(
+                          decoration: const InputDecoration(
+                            labelText: 'Select Port',
+                            border: OutlineInputBorder(),
                           ),
-                        );
-                      }).toList(),
-                    ),
+                          value: selectedPort,
+                          items: portLpiData.keys.map((port) {
+                            return DropdownMenuItem<String>(
+                              value: port,
+                              child: Text(port),
+                            );
+                          }).toList(),
+                          onChanged: (value) =>
+                              setState(() => selectedPort = value),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      if (selectedPort != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            portLpiData[selectedPort!] ?? '',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
+
+                      const SizedBox(height: 24),
+                      Text(
+                        'Current Logistics Metrics',
+                        style: TextStyle(
+                          fontSize: isWide ? 18 : 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Responsive Grid for Stats
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: const [
+                            _StatBox(
+                              title: 'ET:BT Ratio',
+                              value: '0.82',
+                              icon: LucideIcons.activity,
+                            ),
+                            _StatBox(
+                              title: 'YOR (%)',
+                              value: '67',
+                              icon: LucideIcons.package,
+                            ),
+                            _StatBox(
+                              title: 'BOR (%)',
+                              value: '74',
+                              icon: LucideIcons.alignVerticalSpaceAround,
+                            ),
+                            _StatBox(
+                              title: 'Productivity',
+                              value: '132',
+                              icon: LucideIcons.trendingUp,
+                            ),
+                            _StatBox(
+                              title: 'Delay Alerts',
+                              value: '3',
+                              icon: LucideIcons.alertTriangle,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 32),
+                      Text(
+                        'Featured Logistics Services',
+                        style: TextStyle(
+                          fontSize: isWide ? 18 : 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Promo Info List
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Column(
+                          children: promoList.map((promo) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: Colors.indigo.shade50,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Icon(
+                                      promo.icon,
+                                      size: 28,
+                                      color: Colors.indigo,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          promo.title,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          promo.description,
+                                          style: const TextStyle(fontSize: 13),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                    ]),
                   ),
-                  const SizedBox(height: 40),
-                ]),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -334,13 +336,17 @@ class _TopMenuBar extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
+    final isWide = MediaQuery.of(context).size.width > 600;
+
     return Material(
       color: Colors.white,
       elevation: 2,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: isWide
+              ? MainAxisAlignment.spaceAround
+              : MainAxisAlignment.spaceBetween,
           children: [
             _roleButton(Icons.business, 'Forwarder', onTap: onForwarderTap),
             _roleButton(Icons.local_shipping, 'Driver', onTap: onDriverTap),
@@ -389,7 +395,7 @@ class _StatBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(right: 12),
+      width: 130,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.grey.shade100,
