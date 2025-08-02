@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Indonesian Port Logistics e-Consultant | Rudy Sangian</title>
+  <meta name="description"
+    content="Discover the Integrated Port Model (IPM) and manage 82 key port logistics processes. Designed in Indonesia for global maritime logistics.">
+  <meta name="keywords"
+    content="Port Logistics, IPM, Indonesian Ports, Port Community, Maritime Supply Chain, Integrated Port Model, Rudy Sangian">
+  <meta name="author" content="Rudy Sangian">
+
+  <meta property="og:title" content="Indonesian Port Logistics e-Consultant | IPM" />
+  <meta property="og:description"
+    content="Master the 82 logistics processes of Indonesian ports with IPM. A framework built for global maritime coordination." />
+  <meta property="og:image" content="https://rudysangian.com/assets/images/profil2.png" />
+  <meta property="og:url" content="https://rudysangian.com" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="canonical" href="https://rudysangian.com/" />
+
+  <!-- ✅ Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmuD_z9M1m8N6fEJWJ4nxJrPre4IWZWpM"></script>
+
+  <script>
+    function initMapWithVessels(vessels, zoom = 13) {
+      const canvas = document.getElementById('gmap-canvas');
+      if (!canvas) {
+        console.error('❌ gmap-canvas not found');
+        return;
+      }
+
+      if (!Array.isArray(vessels) || vessels.length === 0 || !vessels[0]) {
+        console.error('❌ Invalid or empty vessels array', vessels);
+        return;
+      }
+
+      const map = new google.maps.Map(canvas, {
+        center: { lat: vessels[0].lat, lng: vessels[0].lng },
+        zoom: zoom,
+      });
+
+      vessels.forEach(v => {
+        if (v?.lat && v?.lng) {
+          const marker = new google.maps.Marker({
+            position: { lat: v.lat, lng: v.lng },
+            map: map,
+            title: v.name || 'Vessel',
+            icon: {
+              path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+              scale: 4,
+              fillColor: '#0000FF',
+              fillOpacity: 1,
+              strokeWeight: 1,
+              rotation: v.heading ?? 0
+            }
+          });
+
+          const info = new google.maps.InfoWindow({
+            content: `<b>${v.name || 'Vessel'}</b>`
+          });
+
+          marker.addListener('click', () => {
+            info.open(map, marker);
+          });
+        }
+      });
+    }
+
+    window.addEventListener('loadMap', (event) => {
+      const detail = event.detail || {};
+      try {
+        const vessels = JSON.parse(detail.vessels);
+        const zoom = detail.zoom || 13;
+        initMapWithVessels(vessels, zoom);
+      } catch (e) {
+        console.error('❌ Error parsing vessels:', e);
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+
+</html>

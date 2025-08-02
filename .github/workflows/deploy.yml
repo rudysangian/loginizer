@@ -1,0 +1,30 @@
+name: Build and Deploy Flutter Web
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24.0"
+
+      - name: Build Flutter Web
+        run: flutter build web --release
+
+      - name: Deploy to VPS (/var/www/html)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          source: "build/web/*"
+          target: ${{ secrets.VPS_PATH_HTML }}

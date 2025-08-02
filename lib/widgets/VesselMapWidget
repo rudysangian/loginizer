@@ -1,0 +1,30 @@
+class VesselMapWidget extends StatelessWidget {
+  final String viewID = 'gmap-canvas';
+
+  @override
+  Widget build(BuildContext context) {
+    // Daftarkan div HTML yang akan diisi Google Maps
+    ui.platformViewRegistry.registerViewFactory(
+      viewID,
+      (int viewId) {
+        final element = html.DivElement()
+          ..id = viewID
+          ..style.width = '100%'
+          ..style.height = '100vh';
+        
+        // Panggil JS function initMap() dari index.html
+        js.context.callMethod('initMap');
+
+        return element;
+      },
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Peta Kapal di Patimban'),
+      ),
+      body: HtmlElementView(viewType: viewID),
+    );
+  }
+}
+
